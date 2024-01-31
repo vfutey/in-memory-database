@@ -34,7 +34,7 @@ func (db *inMemDB) StartTransaction() {
 
 func (db *inMemDB) Commit() {
 	if db.history.IsEmpty() {
-		// TODO: we can return error/panic in this case - that means that we try to commit/rollback transaction that not started
+		// TODO: we can return error/panic in this case - that means that we try to commit transaction that not started
 		return
 	}
 	_, _ = db.history.Pop()
@@ -43,7 +43,7 @@ func (db *inMemDB) Commit() {
 func (db *inMemDB) Rollback() {
 	values, ok := db.history.Pop()
 	if !ok {
-		// TODO: we can return error/panic in this case - that means that we try to commit/rollback transaction that not started
+		// TODO: we can return error/panic in this case - that means that we try to rollback transaction that not started
 		return
 	}
 	db.values = values // revert values to previous snapshot
