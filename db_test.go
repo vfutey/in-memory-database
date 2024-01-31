@@ -14,17 +14,25 @@ const (
 
 func TestSimple(t *testing.T) {
 	db := InMemoryDatabase()
-	res, ok := db.Get(key1)
-	require.False(t, ok)
-	assert.Empty(t, res)
+	assertAbsent(t, db, key1)
 
 	db.Set(key1, value1)
-	res, ok = db.Get(key1)
-	require.True(t, ok)
-	assert.Equal(t, value1, res)
+	assertEqual(t, db, key1, value1)
 
 	db.Delete(key1)
-	res, ok = db.Get(key1)
+	assertAbsent(t, db, key1)
+}
+
+func assertEqual(t *testing.T, db DB, key, value string) {
+	t.Helper()
+	res, ok := db.Get(key)
+	require.True(t, ok)
+	assert.Equal(t, value, res)
+}
+
+func assertAbsent(t *testing.T, db DB, key string) {
+	t.Helper()
+	res, ok := db.Get(key)
 	require.False(t, ok)
 	assert.Empty(t, res)
 }
