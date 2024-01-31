@@ -1,12 +1,16 @@
 package in_memory_database
 
+import "github.com/ttdsuen/golang-stack"
+
 type inMemDB struct {
-	values map[string]string
+	values  map[string]string
+	history *stack.Stack[map[string]string]
 }
 
 func InMemoryDatabase() DB {
 	db := new(inMemDB)
 	db.values = make(map[string]string)
+	db.history = stack.NewStack[map[string]string]()
 	return db
 }
 
