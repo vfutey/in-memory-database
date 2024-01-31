@@ -28,13 +28,31 @@ func (db *inMemDB) Delete(key string) {
 }
 
 func (db *inMemDB) StartTransaction() {
-	panic("implement me")
+	clonedMap := cloneMap(db.values)
+	db.history.Push(clonedMap)
 }
 
 func (db *inMemDB) Commit() {
-	panic("implement me")
+	if db.history.IsEmpty() {
+		// TODO: we can return error/panic in this case - that means that we try to commit/rollback transaction that not started
+		return
+	}
+	_, _ = db.history.Pop()
 }
 
 func (db *inMemDB) Rollback() {
-	panic("implement me")
+	values, ok := db.history.Pop()
+	if !ok {
+		// TODO: we can return error/panic in this case - that means that we try to commit/rollback transaction that not started
+		return
+	}
+	db.values = values // revert values to previous snapshot
+}
+
+func cloneMap(values map[string]string) map[string]string {
+	res := make(map[string]string, len(values))
+	for key, value := range values {
+		res[key] = value
+	}
+	return res
 }
